@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QUrl>
 
+#include "platform.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -28,9 +30,7 @@ void MainWindow::on_actionAdd_platform_triggered()
 
     qDebug() << dir.fileName() << "; " << dir.path();
 
-    QFile library("library.txt");
-    if (library.open(QFile::ReadWrite)) {
-        QTextStream out(&library);
-        //out <<
-    }
+    Platform p = Platform("Playstation 1", dir);
+    p.Write();
+    p.Read();
 }

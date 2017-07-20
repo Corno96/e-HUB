@@ -18,9 +18,8 @@ int main(int argc, char *argv[])
     }
     */
 
-    Platform p = Platform("Playstation 1", QUrl());
-    p.Write();
-    p.Read();
+
+    //p.Read();
 
     return a.exec();
 }

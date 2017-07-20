@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonValue>
 
 Platform::Platform() {
     this->name = "";
@@ -32,10 +33,17 @@ QUrl Platform::getPath() const {
 
 void Platform::Write() const {
     QString lib = name+".json";
-    QFile library(lib);
-    library.open(QFile::WriteOnly);
-    library.write("Ciao");
-    library.close();
+    QFile file(lib);
+    file.open(QFile::WriteOnly);
+
+    QJsonValue val = QJsonValue(path.toString());
+    QJsonObject obj = QJsonObject();
+    obj.insert(QString("path"), val);
+
+    QJsonDocument doc = QJsonDocument(obj);
+
+    file.write(doc.toJson());
+    file.close();
 }
 
 void Platform::Read() {
@@ -43,12 +51,12 @@ void Platform::Read() {
     QString lib = name+".json";
     QFile file(lib);
     file.open(QFile::ReadOnly);
-    QString str = file.readAll();
+
+    QJsonDocument doc = QJsonDocument::fromJson(QString(file.readAll()).toUtf8());
+
     file.close();
 
-    // save to class
-    QJsonDocument library = QJsonDocument::fromJson(str.toUtf8());
-    QJsonObject obj = library.object();
+    QJsonObject obj = doc.object();
 
-    qDebug() << obj;
+    qDebug() << obj.value(QString("path")).toString();
 }
