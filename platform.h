@@ -12,22 +12,23 @@ private:
     QString exe_path, lib_path;
 
 public:
-    Platform();
-    Platform(QString name, QString exe_path, QString lib_path);
+    // Constructors
+    //Platform();
+    Platform(QString name = "", QString exe_path = "", QString lib_path = "");
 
-    QString getName() const;
+    // Getter-Setter
+    QString getName() const;                    // name
     void setName(const QString &value);
-
-    QString getExe_path() const;
+    QString getExe_path() const;                // exe_path
     void setExe_path(const QString &value);
-
-    QString getLib_path() const;
+    QString getLib_path() const;                // lib_path
     void setLib_path(const QString &value);
 
-    void Write() const;
-    void Read();
-
-    QJsonObject toJsonObject() const;
+    // Methods
+    void save() const; // write to json
+    void load(const QString &path);       // read from json
+    void print() const; // print to qDebug()
+    QJsonObject toJsonObject() const;   // convert to jsonObject
 };
 
 #endif // PLATFORM_H

@@ -6,9 +6,13 @@
 #include <QDebug>
 #include <QUrl>
 
+#include <QVector>
 
-#include "platform.h"
-#include "addplatform.h"
+#include "library.h"
+
+enum pages{ADD_PLATFORM, BLANK};
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,7 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //ui->add_platform->setStyleSheet("background-image: url(:/images/hydro.png)");
+    // Load the library
+    Library library;
+
+    library.load();
 }
 
 MainWindow::~MainWindow()
@@ -24,23 +31,43 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_actionAdd_platform_triggered()
+
+void MainWindow::on_switch_add_platform_button_clicked()
 {
-    AddPlatformDialog* d = new AddPlatformDialog(this);
-    d->show();
-
-
-
-
-
-
-
-    //Platform p = Platform(dir.fileName(), dir.path());
-    //p.Read();
+    ui->stackedWidget->setCurrentIndex(ADD_PLATFORM);
 }
 
-void MainWindow::on_add_platform_clicked()
+
+void MainWindow::on_add_platform_2_clicked()
 {
-    AddPlatformDialog* d = new AddPlatformDialog(this);
-    d->show();
+    ui->stackedWidget->setCurrentIndex(BLANK);
+}
+
+void MainWindow::on_add_platform_button_clicked()
+{
+    // get from user exe_path, lib_path and create platform(write to file)
+    Platform p = Platform(ui->name->text(), ui->exe_path->text(), ui->lib_path->text());
+
+    p.print();
+
+    p.save();
+
+    ui->stackedWidget->setCurrentIndex(BLANK);
+}
+
+
+void MainWindow::on_browse_exe_button_clicked()
+{
+    QUrl dir = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    "/home", tr("Executables (*.exe)"));
+    ui->exe_path->setText(dir.path());
+}
+
+void MainWindow::on_browse_lib_button_clicked()
+{
+    QUrl dir = QFileDialog::getExistingDirectoryUrl(this, tr("Open Directory"),
+                                                    QUrl(QString("/home")),
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    ui->lib_path->setText(dir.path());
 }

@@ -16,9 +16,12 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionAdd_platform_triggered();
-
-    void on_add_platform_clicked();
+    // ADD PLATFORM PAGE
+    void on_add_platform_2_clicked();
+    void on_add_platform_button_clicked();
+    void on_browse_exe_button_clicked();
+    void on_browse_lib_button_clicked();
+    void on_switch_add_platform_button_clicked();
 
 private:
     Ui::MainWindow *ui;
