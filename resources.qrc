@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/button">
+        <file>resources/button.png</file>
+        <file>resources/button-hover.png</file>
+    </qresource>
+</RCC>

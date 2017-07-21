@@ -18,6 +18,8 @@ public:
 private slots:
     void on_actionAdd_platform_triggered();
 
+    void on_add_platform_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -2,16 +2,21 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QListWidgetItem>
 #include <QDebug>
 #include <QUrl>
 
+
 #include "platform.h"
+#include "addplatform.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //ui->add_platform->setStyleSheet("background-image: url(:/images/hydro.png)");
 }
 
 MainWindow::~MainWindow()
@@ -21,16 +26,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionAdd_platform_triggered()
 {
-    QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::Directory);
-    QUrl dir = QFileDialog::getExistingDirectoryUrl(this, tr("Open Directory"),
-                                                    QUrl(),
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+    AddPlatformDialog* d = new AddPlatformDialog(this);
+    d->show();
 
-    qDebug() << dir.fileName() << "; " << dir.path();
 
-    Platform p = Platform("Playstation 1", dir);
-    p.Write();
-    p.Read();
+
+
+
+
+
+    //Platform p = Platform(dir.fileName(), dir.path());
+    //p.Read();
+}
+
+void MainWindow::on_add_platform_clicked()
+{
+    AddPlatformDialog* d = new AddPlatformDialog(this);
+    d->show();
 }
