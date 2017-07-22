@@ -8,11 +8,11 @@
 
 #include <QVector>
 
+#include <QProcess>
+
 #include "library.h"
 
 enum pages{ADD_PLATFORM, BLANK};
-
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,10 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Load the library
-    Library library;
 
-    library.load();
 }
 
 MainWindow::~MainWindow()
@@ -37,20 +34,18 @@ void MainWindow::on_switch_add_platform_button_clicked()
     ui->stackedWidget->setCurrentIndex(ADD_PLATFORM);
 }
 
-
-void MainWindow::on_add_platform_2_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(BLANK);
-}
-
 void MainWindow::on_add_platform_button_clicked()
 {
     // get from user exe_path, lib_path and create platform(write to file)
     Platform p = Platform(ui->name->text(), ui->exe_path->text(), ui->lib_path->text());
 
-    p.print();
-
     p.save();
+
+    // add button for new platform
+    QPushButton* p_button = new QPushButton();
+    p_button->setText(p.getName());
+
+    ui->left_panel->layout()->addWidget(p_button);
 
     ui->stackedWidget->setCurrentIndex(BLANK);
 }

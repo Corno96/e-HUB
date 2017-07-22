@@ -3,17 +3,7 @@
 #include <QDirIterator>
 #include <QDebug>
 
-Library::Library() {
-    library = new QVector<Platform>();
-}
-
-const QVector<Platform>* Library::getLibrary() const {
-    return library;
-}
-
-void Library::setLibrary(QVector<Platform>* value) {
-    library = value;
-}
+Library::Library() {}
 
 void Library::save() const {
     // create library folder if it doesn't exists
@@ -37,13 +27,13 @@ void Library::load() {
 
             temp->load(path);
 
-            library->append(*temp);
+            library.append(*temp);
         }
     }
 }
 
 void Library::print() const {
-    for (int i=0;i<library->size();++i) {
-        library->at(i).print();
+    for (int i=0;i<library.size();++i) {
+        library.at(i).print();
     }
 }

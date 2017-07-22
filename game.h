@@ -10,8 +10,17 @@ private:
     QString path;
 
 public:
-    Game();
-    Game(QString name, QString path);
+    // Constructors
+    Game(QString name = "", QString path = "");
+
+    // Getter Setter
+    QString getName() const;
+    void setName(const QString &value);
+    QString getPath() const;
+    void setPath(const QString &value);
+
+    // methods
+
 };
 
 #endif // GAME_H

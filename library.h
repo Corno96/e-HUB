@@ -1,20 +1,17 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
-#include <QVector>
 #include "platform.h"
+
+#include <QMap>
 
 class Library {
 private:
-    QVector<Platform> *library;
+    QVector<Platform> library;
 
 public:
     // Constructors
     Library();
-
-    // Getter-Setter
-    const QVector<Platform>* getLibrary() const;
-    void setLibrary(QVector<Platform> *value);
 
     // Methods
     void save() const;

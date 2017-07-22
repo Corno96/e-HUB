@@ -17,7 +17,6 @@ public:
 
 private slots:
     // ADD PLATFORM PAGE
-    void on_add_platform_2_clicked();
     void on_add_platform_button_clicked();
     void on_browse_exe_button_clicked();
     void on_browse_lib_button_clicked();
