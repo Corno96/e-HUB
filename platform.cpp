@@ -1,9 +1,10 @@
 #include "platform.h"
 
-Platform::Platform(QString name, QString exe_path, QString lib_path) {
+Platform::Platform(QString name, QString exe_path, QString lib_path, QString cmd_str) {
     this->name = name;
     this->exe_path = exe_path;
     this->lib_path = lib_path;
+    this->cmd_str = cmd_str;
 }
 
 QString Platform::getName() const
@@ -36,14 +37,14 @@ void Platform::setLib_path(const QString &value)
     lib_path = value;
 }
 
-QString Platform::getExt() const
+QString Platform::getCmd_str() const
 {
-    return ext;
+    return cmd_str;
 }
 
-void Platform::setExt(const QString &value)
+void Platform::setCmd_str(const QString &value)
 {
-    ext = value;
+    cmd_str = value;
 }
 
 void Platform::save() const {
@@ -86,10 +87,26 @@ void Platform::print() const {
     qDebug() << name << exe_path << lib_path;
 }
 
-void Platform::LoadCmdStr() {
+void Platform::loadCmdStr() {
     // read file cmd_str
+    QFile file(QDir::currentPath() + "/cmd_str.json");
+    file.open(QFile::ReadOnly);
+    QJsonDocument doc = QJsonDocument::fromJson(QString(file.readAll()).toUtf8());
+    file.close();
+
+    QJsonObject obj = doc.object();
+
     // get info for this platform (by name)
+    QJsonValue val = obj.value(getExeName());
+
+    // check if exists
+    if (val == QJsonValue::Undefined) {
+        qDebug() << "No command structure for platform " << getExeName();
+        return;
+    }
+
     // save it to cmd_str
+    cmd_str = val.toString();
 }
 
 // convert to jsonObject
@@ -104,6 +121,12 @@ QJsonObject Platform::toJsonObject() const {
     obj.insert(QString("lib_path"), lib);
 
     return obj;
+}
+
+QString Platform::getExeName() const {
+    QUrl url = QUrl(exe_path);
+
+    return url.fileName();
 }
 
 void Platform::addGame(Game g) {
@@ -121,10 +144,34 @@ void Platform::removeGame(QString name) {
     qDebug() << "Couldn't remove game " << name;
 }
 
+QString Quotes(QString str) {
+    str.insert(0,'"');
+    str.append('"');
+
+    return str;
+}
+
+const QString Platform::EXE_PATH = "EXE_PATH";
+const QString Platform::GAME_PATH = "GAME_PATH";
+
 void Platform::launchGame(const Game &g) const {
     QProcess *process = new QProcess();
 
-    qDebug() <<  g.getPath();
+    QString command = "";
 
-    process->start(exe_path + " -loadbin " + "\"" + g.getPath() + "\"" + " -nogui");
+    QStringList list = cmd_str.split(QString(";"));
+
+    for (int i=0;i<list.size();++i) {
+        QString temp = list.at(i);
+        if (temp == EXE_PATH)
+            command += Quotes(exe_path) + " ";
+        else if (temp == GAME_PATH)
+            command += Quotes(g.getPath()) + " ";
+        else
+            command += list.at(i) + " ";
+    }
+
+    qDebug() << command;
+
+    process->start(command);
 }
