@@ -3,10 +3,24 @@
 #include <QDirIterator>
 #include <QDebug>
 
-Library::Library() {}
+Library::Library() {
+    this->load();
+}
+
+QVector<Platform> Library::getLibrary() const
+{
+    return library;
+}
+
+void Library::setLibrary(const QVector<Platform> &value)
+{
+    library = value;
+}
 
 void Library::save() const {
-    // create library folder if it doesn't exists
+    for (int i=0;i<library.size();++i) {
+        library[i].save();
+    }
 }
 
 void Library::load() {

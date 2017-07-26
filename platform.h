@@ -10,6 +10,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 #include <QVector>
 
 #include "game.h"
@@ -40,6 +41,8 @@ public:
     void setLib_path(const QString &value);
     QString getCmd_str() const;                 // cmd_str
     void setCmd_str(const QString &value);
+    QVector<Game> getGames() const;             // games
+    void setGames(const QVector<Game> &value);
 
     // Methods
     void save() const;              // write to json

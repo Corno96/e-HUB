@@ -47,6 +47,16 @@ void Platform::setCmd_str(const QString &value)
     cmd_str = value;
 }
 
+QVector<Game> Platform::getGames() const
+{
+    return games;
+}
+
+void Platform::setGames(const QVector<Game> &value)
+{
+    games = value;
+}
+
 void Platform::save() const {
     // open file
     QString lib = QDir::currentPath() + "/library/" + name +".json";
@@ -81,10 +91,29 @@ void Platform::load(const QString &path) {
     lib_path = obj.value(QString("lib_path")).toString();
 
     // add game to games
+    QJsonArray array = obj.value(QString("games")).toArray();
+
+    for (int i=0;i<array.size();++i) {
+        QString name, game_path;
+        QJsonObject o = array[i].toObject();
+        name = o.value(QString("name")).toString();
+        game_path = o.value(QString("game_path")).toString();
+
+        Game temp = Game(name, game_path);
+
+        games.push_back(temp);
+    }
+
+    // load cmd_str
+    loadCmdStr();
 }
 
 void Platform::print() const {
-    qDebug() << name << exe_path << lib_path;
+    qDebug() << "name: " << name << "; executable: " << exe_path << "; library: " << lib_path;
+
+    for (int i=0;i<games.size();++i) {
+        games[i].print();
+    }
 }
 
 void Platform::loadCmdStr() {
@@ -119,6 +148,15 @@ QJsonObject Platform::toJsonObject() const {
     obj.insert(QString("name"), n);
     obj.insert(QString("exe_path"), exe);
     obj.insert(QString("lib_path"), lib);
+
+    QJsonArray games_array;
+
+    // vector of json objects
+    for (int i=0;i<games.size();++i) {
+        games_array.push_back(games.at(i).toJsonObject());
+    }
+
+    obj.insert(QString("games"), games_array);
 
     return obj;
 }
@@ -166,7 +204,7 @@ void Platform::launchGame(const Game &g) const {
         if (temp == EXE_PATH)
             command += Quotes(exe_path) + " ";
         else if (temp == GAME_PATH)
-            command += Quotes(g.getPath()) + " ";
+            command += Quotes(g.getGame_path()) + " ";
         else
             command += list.at(i) + " ";
     }

@@ -13,6 +13,9 @@ public:
     // Constructors
     Library();
 
+    QVector<Platform> getLibrary() const;
+    void setLibrary(const QVector<Platform> &value);
+
     // Methods
     void save() const;
     void load();
