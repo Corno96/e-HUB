@@ -54,6 +54,7 @@ public:
     QString getExeName() const;     // returns the executable file name
 
     void addGame(Game g);           // add game to games
+    Game* getGame(int i);           // get game at i position
     void removeGame(QString name);  // remove game from games
     void launchGame(const Game &g) const;   // launch game with emulator
 };

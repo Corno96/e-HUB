@@ -13,8 +13,9 @@
 #include <QProcess>
 
 #include "library.h"
+#include "platform_button.h"
 
-enum pages{ADD_PLATFORM, BLANK};
+Library l = Library();
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,13 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    columns = 2;
 
     // load library
-    Library l = Library();
+    //Library l = Library();
 
-    QVector<QString> names = {"ciao", "bella", "wow", "figo", "wowowo"};
-    int columns = 2;
+    QVector<QString> names = {"PS1", "Gamecube", "wow", "figo", "wowowo"};
 
+    drawGrid(names, &l);
+
+    /*
     QHBoxLayout* layout = new QHBoxLayout;
     QWidget* widget = new QWidget(this);
 
@@ -53,11 +57,13 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     if (layout->count() != 0) {
+        layout->setAlignment(Qt::AlignLeft);
         widget->setLayout(layout);
 
         ui->platforms->layout()->addWidget(widget);
         widget->show();
     }
+    */
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +71,54 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::drawGrid(QVector<QString> vec, Library* library)
+{
+    QHBoxLayout* layout = new QHBoxLayout;
+    QWidget* widget = new QWidget(this);
+
+    for (auto widget: ui->platforms->findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly))
+      delete widget;
+
+    for (int i=0;i<=(vec.size()/columns);++i){
+
+        for (int k=0;k<columns;++k) {
+            if (i*columns + k >= vec.size())
+                break;
+
+            Platform* p = library->getPlatform(vec[i*columns+k]);
+
+            qDebug() << "Dopo : " << p;
+
+            if (p != nullptr)
+                p->print();
+
+            // create button and add it to layout
+            PButton* button = new PButton(this, this, p);
+            QObject::connect(button, SIGNAL(clicked(bool)), button, SLOT(choosePlatform()));
+            button->setText(vec[i*columns+k]);
+
+            layout->addWidget(button);
+        }
+
+        // set widget layout and add it to main layout
+        //layout->setAlignment(Qt::AlignLeft);
+        widget->setLayout(layout);
+
+        ui->platforms->layout()->addWidget(widget);
+        widget->show();
+
+        widget = new QWidget(this);
+        layout = new QHBoxLayout;
+    }
+}
+
+Ui::MainWindow* MainWindow::getUI() {
+    return ui;
+}
+
+int MainWindow::getColumns() {
+    return columns;
+}
 
 void MainWindow::on_switch_add_platform_button_clicked()
 {
@@ -108,4 +162,18 @@ void MainWindow::on_browse_lib_button_clicked()
                                                     | QFileDialog::DontResolveSymlinks);
     ui->lib_path->setText(dir.path());
     */
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+    QVector<QString> names = {"PS1", "bella", "wow", "figo", "wowowo"};
+
+    columns = arg1.toInt();
+
+    drawGrid(names, &l);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(PLATFORM);
 }

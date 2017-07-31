@@ -130,7 +130,8 @@ void Platform::loadCmdStr() {
 
     // check if exists
     if (val == QJsonValue::Undefined) {
-        qDebug() << "No command structure for platform " << getExeName();
+        qDebug() << "No command structure for platform " << getExeName() << ", using default";
+        cmd_str = EXE_PATH + " ; " + GAME_PATH;
         return;
     }
 
@@ -169,6 +170,10 @@ QString Platform::getExeName() const {
 
 void Platform::addGame(Game g) {
     games.append(g);
+}
+
+Game* Platform::getGame(int i) {
+    return (&games[i]);
 }
 
 void Platform::removeGame(QString name) {

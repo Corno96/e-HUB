@@ -51,3 +51,14 @@ void Library::print() const {
         library.at(i).print();
     }
 }
+
+Platform* Library::getPlatform(QString name){
+    for (int i=0;i<library.size();++i) {
+        if (library[i].getName() == name)
+            return &library[i];
+    }
+
+    qDebug() << "No platform with name " << name;
+
+    return nullptr;
+}

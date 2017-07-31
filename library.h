@@ -19,8 +19,9 @@ public:
     // Methods
     void save() const;
     void load();
-
     void print() const;
+
+    Platform *getPlatform(QString name) ;
 };
 
 #endif // LIBRARY_H
